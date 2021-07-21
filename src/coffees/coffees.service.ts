@@ -2,34 +2,39 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
-
-const coffees: Coffee[] = [];
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CoffeesService {
-  create(createCoffeeDto: CreateCoffeeDto) {
+  constructor(
+    @InjectRepository(Coffee) private coffeesRepository: Repository<Coffee>,
+  ) {}
+
+  create(createCoffeeDto: CreateCoffeeDto, userId: number) {
     Logger.log(createCoffeeDto);
-    const newCoffee: Coffee = { name: createCoffeeDto.name };
-    coffees.push(newCoffee);
-    return newCoffee;
+    return this.coffeesRepository.save({
+      user: { id: userId },
+      name: createCoffeeDto.name,
+    });
   }
 
-  findAll() {
-    return coffees;
+  findAll(userId: number) {
+    return this.coffeesRepository.find({ where: `user.id == ${userId}` });
   }
 
   findOne(id: number) {
-    return coffees[id];
+    return this.coffeesRepository.findOne(id);
   }
 
   update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
-    let coffee = coffees[id];
-    coffee = { ...coffee, ...updateCoffeeDto };
-    coffees[id] = coffee;
-    return coffee;
+    return this.coffeesRepository.update(id, {
+      user: { id: 0 },
+      name: updateCoffeeDto.name,
+    });
   }
 
   remove(id: number) {
-    return coffees.splice(id, 1);
+    return this.coffeesRepository.delete(id);
   }
 }

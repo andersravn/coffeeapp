@@ -6,8 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  Logger,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
@@ -16,15 +18,16 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCoffeeDto: CreateCoffeeDto) {
-    Logger.log(createCoffeeDto);
-    return this.coffeesService.create(createCoffeeDto);
+  create(@Body() createCoffeeDto: CreateCoffeeDto, @Request() req) {
+    return this.coffeesService.create(createCoffeeDto, req.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.coffeesService.findAll();
+  findAll(@Request() req) {
+    return this.coffeesService.findAll(req.userId);
   }
 
   @Get(':id')
