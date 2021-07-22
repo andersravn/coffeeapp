@@ -1,26 +1,32 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class CoffeesService {
   constructor(
     @InjectRepository(Coffee) private coffeesRepository: Repository<Coffee>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  create(createCoffeeDto: CreateCoffeeDto, userId: number) {
-    Logger.log(createCoffeeDto);
+  async create(createCoffeeDto: CreateCoffeeDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
+
     return this.coffeesRepository.save({
-      user: { id: userId },
       name: createCoffeeDto.name,
+      user: user,
     });
   }
 
-  findAll(userId: number) {
-    return this.coffeesRepository.find({ where: `user.id == ${userId}` });
+  async findAll(userId: number) {
+    const user = await this.usersRepository.findOne(userId);
+    if (user) {
+      return this.coffeesRepository.find({ relations: ['user'] });
+    }
   }
 
   findOne(id: number) {

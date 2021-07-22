@@ -1,5 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Coffee {
@@ -9,6 +9,6 @@ export class Coffee {
   @Column()
   name: string;
 
-  @OneToOne((type) => User, (user) => user.coffees)
+  @ManyToOne(() => User, (user) => user.coffees)
   user: User;
 }

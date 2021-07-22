@@ -2,7 +2,7 @@
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
-  "username": "anders",
+  "username": "andersravn",
   "password": "postgres",
   "database": "coffee",
   "entities": ["dist/**/*.entity{.ts,.js}"],

@@ -24,6 +24,6 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @OneToMany((type) => Coffee, (coffee) => coffee.user)
+  @OneToMany(() => Coffee, (coffee) => coffee.user)
   coffees: Coffee[];
 }
