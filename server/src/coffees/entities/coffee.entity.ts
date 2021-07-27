@@ -9,6 +9,21 @@ export class Coffee {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  location: string;
+
+  @Column({ nullable: true })
+  producer: string;
+
+  @Column({ nullable: true })
+  varieties: string;
+
+  @Column({ nullable: true })
+  altitude: string;
+
+  @Column({ nullable: true })
+  process: string;
+
   @ManyToOne(() => User, (user) => user.coffees)
   user: User;
 }

@@ -13,6 +13,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
     // TODO: Hash password https://docs.nestjs.com/security/authentication (first warning)
+    Logger.log(createUserDto);
     return await this.usersRepository.save({
       ...createUserDto,
     });
